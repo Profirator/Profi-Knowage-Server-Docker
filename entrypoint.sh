@@ -2,13 +2,13 @@
 set -e
 
 INIT_PROP_FILE=${KNOWAGE_DIRECTORY}/${APACHE_TOMCAT_PACKAGE}/webapps/knowage/WEB-INF/classes/it/eng/spagobi/commons/initializers/metadata/config/configs.xml
-INIT_PROP_FILE_TEMP=${KNOWAGE_DIRECTORY}/webapps/knowage/WEB-INF/classes/it/eng/spagobi/commons/initializers/metadata/config/configs.xml.temp
-SERVER_CONF=${KNOWAGE_DIRECTORY}/conf/server.xml
-WEB_XML=${KNOWAGE_DIRECTORY}/webapps/knowage/WEB-INF/web.xml
-KNOWAGE_JAR=${KNOWAGE_DIRECTORY}/webapps/knowage/WEB-INF/lib/knowage-utils-7.0.0.jar
+INIT_PROP_FILE_TEMP=${KNOWAGE_DIRECTORY}/${APACHE_TOMCAT_PACKAGE}/webapps/knowage/WEB-INF/classes/it/eng/spagobi/commons/initializers/metadata/config/configs.xml.temp
+SERVER_CONF=${KNOWAGE_DIRECTORY}/${APACHE_TOMCAT_PACKAGE}/conf/server.xml
+WEB_XML=${KNOWAGE_DIRECTORY}/${APACHE_TOMCAT_PACKAGE}/webapps/knowage/WEB-INF/web.xml
+KNOWAGE_JAR=${KNOWAGE_DIRECTORY}/${APACHE_TOMCAT_PACKAGE}/webapps/knowage/WEB-INF/lib/${KNOWAGE_UTILS_VERSION}
 UNZIPPED_JAR=knowageJAR
 KNOWAGE_CONF=${UNZIPPED_JAR}/it/eng/spagobi/security/OAuth2/configs.properties
-INITIALIZER_XML=${KNOWAGE_DIRECTORY}/webapps/knowage/WEB-INF/conf/config/initializers.xml
+INITIALIZER_XML=${KNOWAGE_DIRECTORY}/${APACHE_TOMCAT_PACKAGE}/webapps/knowage/WEB-INF/conf/config/initializers.xml
 
 # usage: file_env VAR [DEFAULT]
 #    ie: file_env 'XYZ_DB_PASSWORD' 'example'
@@ -54,7 +54,7 @@ if [[ -n "$KEYROCK" ]]; then
 	change_value "SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS.className" "it.eng.spagobi.security.OAuth2SecurityServiceSupplier"
 	change_value "SPAGOBI_SSO.SECURITY_LOGOUT_URL" "${KEYROCK_URL}"
 
-	sed -i "s/it.eng.spagobi.services.common.FakeSsoService/it.eng.spagobi.services.oauth2.Oauth2SsoService/g" $SERVER_CONF
+	sed -i "s/it.eng.spagobi.services.common.JWTSsoService/it.eng.spagobi.services.oauth2.Oauth2SsoService/g" $SERVER_CONF
 	sed -i "s/<!-- START OAUTH 2/<!-- START OAUTH 2 -->/g" $WEB_XML && sed -i "s/END OAUTH 2 -->/<!-- END OAUTH 2 -->/g" $WEB_XML
 	sed -i "s/it.eng.spagobi.commons.initializers.metadata.MetadataInitializer/it.eng.spagobi.commons.initializers.metadata.OAuth2MetadataInitializer/g" $INITIALIZER_XML
 
@@ -74,6 +74,7 @@ if [[ -n "$KEYROCK" ]]; then
 	sed -i "s/ADMIN_EMAIL.*/ADMIN_EMAIL=${KEYROCK_ADMIN_EMAIL}/g" $KNOWAGE_CONF
 	sed -i "s/ADMIN_PASSWORD.*/ADMIN_PASSWORD=${KEYROCK_ADMIN_PASSWORD}/g" $KNOWAGE_CONF
 	cd $UNZIPPED_JAR; zip -r $KNOWAGE_JAR *
+	rm -rf $UNZIPPED_JAR
 	cd ..
 fi
 
