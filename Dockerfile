@@ -69,7 +69,7 @@ ENV MYSQL_SCRIPT_DIRECTORY ${KNOWAGE_DIRECTORY}/mysql
 WORKDIR ${KNOWAGE_DIRECTORY}
 
 # Install required packages and clean up to save space
-RUN apt-get update \
+RUN apt-get update -y \
 	&& apt-get upgrade -y \
 	&& apt-get install -y wget -q coreutils unzip mysql\* \
 	&& rm -rf /var/lib/apt/lists/*
