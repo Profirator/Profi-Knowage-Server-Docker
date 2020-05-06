@@ -52,7 +52,7 @@ if [[ -n "$KEYROCK" ]]; then
 	change_value "SPAGOBI_SSO.ACTIVE" "true"
 	change_value "SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS.className" "it.eng.spagobi.security.OAuth2SecurityInfoProvider"
 	change_value "SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS.className" "it.eng.spagobi.security.OAuth2SecurityServiceSupplier"
-	change_value "SPAGOBI_SSO.SECURITY_LOGOUT_URL" "${KEYROCK_URL}/auth/external_logout"
+	change_value "SPAGOBI_SSO.SECURITY_LOGOUT_URL" "${KEYROCK_URL}"
 
 	sed -i "s/it.eng.spagobi.services.common.FakeSsoService/it.eng.spagobi.services.oauth2.Oauth2SsoService/g" $SERVER_CONF
 	sed -i "s/<!-- START OAUTH 2/<!-- START OAUTH 2 -->/g" $WEB_XML && sed -i "s/END OAUTH 2 -->/<!-- END OAUTH 2 -->/g" $WEB_XML
@@ -61,9 +61,9 @@ if [[ -n "$KEYROCK" ]]; then
 	unzip $KNOWAGE_JAR -d $UNZIPPED_JAR
 	sed -i "s/CLIENT_ID.*/CLIENT_ID=${KEYROCK_CLIENT_ID}/g" $KNOWAGE_CONF
 	sed -i "s/SECRET.*/SECRET=${KEYROCK_SECRET}/g" $KNOWAGE_CONF
-	sed -i "s#AUTHORIZE_URL.*#AUTHORIZE_URL=${KEYROCK_URL}/oauth2/authorize#g" $KNOWAGE_CONF
-	sed -i "s#ACCESS_TOKEN_URL.*#ACCESS_TOKEN_URL=${KEYROCK_URL}/oauth2/token#g" $KNOWAGE_CONF
-	sed -i "s#USER_INFO_URL.*#USER_INFO_URL=${KEYROCK_URL}/user#g" $KNOWAGE_CONF
+	sed -i "s#AUTHORIZE_URL.*#AUTHORIZE_URL=${KEYROCK_AUTH_URL}#g" $KNOWAGE_CONF
+	sed -i "s#ACCESS_TOKEN_URL.*#ACCESS_TOKEN_URL=${KEYROCK_TOKEN_URL}#g" $KNOWAGE_CONF
+	sed -i "s#USER_INFO_URL.*#USER_INFO_URL=${KEYROCK_USER_URL}#g" $KNOWAGE_CONF
 	sed -i "s#REDIRECT_URI.*#REDIRECT_URI=${KEYROCK_REDIRECT_URI}#g" $KNOWAGE_CONF
 	sed -i "s#REST_BASE_URL.*#REST_BASE_URL=${KEYROCK_REST_URL}/#g" $KNOWAGE_CONF
 	sed -i "s#TOKEN_PATH.*#TOKEN_PATH=${KEYROCK_TOKEN_PATH}#g" $KNOWAGE_CONF
