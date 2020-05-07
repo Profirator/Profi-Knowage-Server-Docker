@@ -71,7 +71,7 @@ WORKDIR ${KNOWAGE_DIRECTORY}
 # Install required packages and clean up to save space
 RUN apt-get update -y \
 	&& apt-get upgrade -y \
-	&& apt-get install -y wget -q coreutils unzip mysql\* \
+	&& apt-get install -y wget -q coreutils unzip zip mysql\* \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Download MySql scripts
