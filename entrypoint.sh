@@ -56,6 +56,7 @@ if [[ -n "$KEYROCK" ]]; then
 
 	sed -i "s/it.eng.spagobi.services.common.JWTSsoService/it.eng.spagobi.services.oauth2.Oauth2SsoService/g" $SERVER_CONF
 	sed -i "s/<!-- START OAUTH 2/<!-- START OAUTH 2 -->/g" $WEB_XML && sed -i "s/END OAUTH 2 -->/<!-- END OAUTH 2 -->/g" $WEB_XML
+	sed -i "s/192.168.28.183:8080/${SERVER_NAME}/g" $WEB_XML
 	sed -i "s/it.eng.spagobi.commons.initializers.metadata.MetadataInitializer/it.eng.spagobi.commons.initializers.metadata.OAuth2MetadataInitializer/g" $INITIALIZER_XML
 
 	unzip $KNOWAGE_JAR -d $UNZIPPED_JAR
