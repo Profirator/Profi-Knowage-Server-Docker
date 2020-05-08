@@ -52,7 +52,7 @@ if [[ -n "$KEYROCK" ]]; then
 	change_value "SPAGOBI_SSO.ACTIVE" "true"
 	change_value "SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS.className" "it.eng.spagobi.security.OAuth2SecurityInfoProvider"
 	change_value "SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS.className" "it.eng.spagobi.security.OAuth2SecurityServiceSupplier"
-	change_value "SPAGOBI_SSO.SECURITY_LOGOUT_URL" "${KEYROCK_URL}"
+	change_value "SPAGOBI_SSO.SECURITY_LOGOUT_URL" "${LOGOUT_URL}"
 
 	sed -i "s/it.eng.spagobi.services.common.JWTSsoService/it.eng.spagobi.services.oauth2.Oauth2SsoService/g" $SERVER_CONF
 	sed -i "s/<!-- START OAUTH 2/<!-- START OAUTH 2 -->/g" $WEB_XML && sed -i "s/END OAUTH 2 -->/<!-- END OAUTH 2 -->/g" $WEB_XML
