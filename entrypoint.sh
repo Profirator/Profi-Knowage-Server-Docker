@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-INIT_PROP_FILE=${KNOWAGE_DIRECTORY}/${APACHE_TOMCAT_PACKAGE}/webapps/knowage/WEB-INF/classes/it/eng/spagobi/commons/initializers/metadata/config/configs.xml
-INIT_PROP_FILE_TEMP=${KNOWAGE_DIRECTORY}/${APACHE_TOMCAT_PACKAGE}/webapps/knowage/WEB-INF/classes/it/eng/spagobi/commons/initializers/metadata/config/configs.xml.temp
+#INIT_PROP_FILE=${KNOWAGE_DIRECTORY}/${APACHE_TOMCAT_PACKAGE}/webapps/knowage/WEB-INF/classes/it/eng/spagobi/commons/initializers/metadata/config/configs.xml
+#INIT_PROP_FILE_TEMP=${KNOWAGE_DIRECTORY}/${APACHE_TOMCAT_PACKAGE}/webapps/knowage/WEB-INF/classes/it/eng/spagobi/commons/initializers/metadata/config/configs.xml.temp
 SERVER_CONF=${KNOWAGE_DIRECTORY}/${APACHE_TOMCAT_PACKAGE}/conf/server.xml
 WEB_XML=${KNOWAGE_DIRECTORY}/${APACHE_TOMCAT_PACKAGE}/webapps/knowage/WEB-INF/web.xml
 KNOWAGE_JAR=${KNOWAGE_DIRECTORY}/${APACHE_TOMCAT_PACKAGE}/webapps/knowage/WEB-INF/lib/${KNOWAGE_UTILS_VERSION}
@@ -32,12 +32,12 @@ file_env() {
 	unset "$fileVar"
 }
 
-change_value() {
-	touch $INIT_PROP_FILE_TEMP
-	local label="$1"
-	local value_check="$2"
-	tr -d '\n' < $INIT_PROP_FILE | sed 's#/>#/>\n#g' | sed 's/valueCheck=/\x00/g' | sed -E "s#(label=\"${label}\"[^\x00]*\x00)\"[^\"]*#\1\"${value_check}#g" | sed 's/\x00/valueCheck=/g' > $INIT_PROP_FILE_TEMP && mv $INIT_PROP_FILE_TEMP $INIT_PROP_FILE
-}
+#change_value() {
+#	touch $INIT_PROP_FILE_TEMP
+#	local label="$1"
+#	local value_check="$2"
+#	tr -d '\n' < $INIT_PROP_FILE | sed 's#/>#/>\n#g' | sed 's/valueCheck=/\x00/g' | sed -E "s#(label=\"${label}\"[^\x00]*\x00)\"[^\"]*#\1\"${value_check}#g" | sed 's/\x00/valueCheck=/g' > $INIT_PROP_FILE_TEMP && mv $INIT_PROP_FILE_TEMP $INIT_PROP_FILE
+#}
 
 file_env "DB_USER"
 file_env "DB_PASS"
@@ -49,10 +49,11 @@ file_env "PUBLIC_ADDRESS"
 
 #Following the tutorial https://knowage.readthedocs.io/en/latest/admin/README/index.html#configuration-with-the-idm-keyrock
 if [[ -n "$KEYROCK" ]]; then
-	change_value "SPAGOBI_SSO.ACTIVE" "true"
-	change_value "SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS.className" "it.eng.spagobi.security.OAuth2SecurityInfoProvider"
-	change_value "SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS.className" "it.eng.spagobi.security.OAuth2SecurityServiceSupplier"
-	change_value "SPAGOBI_SSO.SECURITY_LOGOUT_URL" "${LOGOUT_URL}"
+# TODO - Knowage "configuration management" needs to be automated; This will save additional overhead of IDM integration
+#	change_value "SPAGOBI_SSO.ACTIVE" "true"
+#	change_value "SPAGOBI.SECURITY.PORTAL-SECURITY-CLASS.className" "it.eng.spagobi.security.OAuth2SecurityInfoProvider"
+#	change_value "SPAGOBI.SECURITY.USER-PROFILE-FACTORY-CLASS.className" "it.eng.spagobi.security.OAuth2SecurityServiceSupplier"
+#	change_value "SPAGOBI_SSO.SECURITY_LOGOUT_URL" "${LOGOUT_URL}"
 
 	sed -i "s#it.eng.spagobi.services.common.JWTSsoService#it.eng.spagobi.services.oauth2.Oauth2SsoService#g" $SERVER_CONF
 	sed -i "s#<!-- START OAUTH 2#<!-- START OAUTH 2 -->#g" $WEB_XML && sed -i "s#END OAUTH 2 -->#<!-- END OAUTH 2 -->#g" $WEB_XML
